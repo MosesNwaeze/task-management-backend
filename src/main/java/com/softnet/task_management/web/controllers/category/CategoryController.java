@@ -46,4 +46,13 @@ public class CategoryController {
   }
 
 
+  @PutMapping("/{cateId}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<Void> updateCategory(@PathVariable("cateId") Long cateId, @RequestBody CategoryRequestDTO categoryRequestDTO){
+
+    this.taskCategoryService.updateCategory(categoryRequestDTO, cateId);
+    return ResponseEntity.noContent().build();
+  }
+
+
 }

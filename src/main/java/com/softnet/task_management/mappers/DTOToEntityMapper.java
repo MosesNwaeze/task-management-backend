@@ -5,6 +5,7 @@ import com.softnet.task_management.domains.task.TaskEntity;
 import com.softnet.task_management.domains.task_category.TaskCategoryEntity;
 import com.softnet.task_management.domains.user.UserEntity;
 import com.softnet.task_management.utils.LoggingTimeHelper;
+import com.softnet.task_management.web.controllers.category.CategoryRequestDTO;
 import com.softnet.task_management.web.controllers.task.TaskRequestDTO;
 import com.softnet.task_management.web.controllers.user.UserRequestDTO;
 import com.softnet.task_management.web.dtos.LoggedInHourRequestDTO;
@@ -59,15 +60,16 @@ public class DTOToEntityMapper {
       .build();
   }
 
-  public static TaskCategoryEntity categoryResponseDTO(TaskCategoryEntity taskCategoryEntity) {
+  public static TaskCategoryEntity categoryResponseDTO(CategoryRequestDTO categoryRequestDTO, UserEntity userEntity) {
+
     return TaskCategoryEntity
       .builder()
-      .description(taskCategoryEntity.getDescription())
-      .createdBy(taskCategoryEntity.getCreatedBy())
-      .name(taskCategoryEntity.getName())
-      .categoryId(taskCategoryEntity.getCategoryId())
-      .taskEntity(taskCategoryEntity.getTaskEntity())
-      .name(taskCategoryEntity.getName())
+      .description(categoryRequestDTO.description())
+      .createdBy(userEntity)
+      .name(categoryRequestDTO.name())
+      .taskEntity(categoryRequestDTO.tasks())
+      .name(categoryRequestDTO.name())
       .build();
   }
+
 }

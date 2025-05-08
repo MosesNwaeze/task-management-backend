@@ -1,6 +1,8 @@
 package com.softnet.task_management.domains.task_category;
 
 import com.softnet.task_management.domains.user.UserEntity;
+import com.softnet.task_management.mappers.DTOToEntityMapper;
+import com.softnet.task_management.utils.CustomUser;
 import com.softnet.task_management.utils.CustomUserDetailsService;
 import com.softnet.task_management.web.controllers.category.CategoryRequestDTO;
 import com.softnet.task_management.web.controllers.category.CategoryResponseDTO;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -97,5 +100,37 @@ public class TaskCategoryService {
       throw new Exception(ex.getMessage());
     }
 
+  }
+
+  @Transactional
+  public void updateCategory(CategoryRequestDTO categoryRequestDTO, Long cateId) {
+
+    UserEntity userEntity = this.customUserDetailsService.getUserEntity(userDetails().getUsername());
+
+    TaskCategoryEntity cateToUpdate = this.taskCategoryRepository.findById(cateId).orElseThrow();
+
+
+    TaskCategoryEntity requestObjectToUpdate = DTOToEntityMapper.categoryResponseDTO(categoryRequestDTO, userEntity);
+
+
+    if (Objects.nonNull(requestObjectToUpdate.getDescription())) {
+      cateToUpdate.setDescription(requestObjectToUpdate.getDescription());
+    }
+
+    if (Objects.nonNull(requestObjectToUpdate.getName())) {
+      cateToUpdate.setName(requestObjectToUpdate.getName());
+    }
+
+    if (Objects.nonNull(requestObjectToUpdate.getTaskEntity())) {
+      cateToUpdate.setTaskEntity(requestObjectToUpdate.getTaskEntity());
+    }
+
+    this.taskCategoryRepository.save(cateToUpdate);
+
+  }
+
+  public CustomUser userDetails() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return (CustomUser) authentication.getPrincipal();
   }
 }
