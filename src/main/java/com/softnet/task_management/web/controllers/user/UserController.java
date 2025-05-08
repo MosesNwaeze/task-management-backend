@@ -59,6 +59,19 @@ public class UserController {
 
   }
 
+  @PutMapping("/{userId}")
+  @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+  public ResponseEntity<Void> editUser(@RequestBody UserRequestDTO userRequestDTO, @PathVariable("userId") Long userId) {
+    this.userService.editUser(userRequestDTO, userId);
+    return ResponseEntity.noContent().build();
+  }
+
+  @DeleteMapping("/{userId}")
+  public ResponseEntity<Void> removeUser(@PathVariable Long userId) {
+    this.userService.removeUser(userId);
+    return ResponseEntity.noContent().build();
+  }
+
   private CustomUser userDetails() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     return (CustomUser) authentication.getPrincipal();

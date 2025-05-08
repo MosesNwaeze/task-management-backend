@@ -87,33 +87,7 @@ public class UserService {
     UserEntity userEntity = userRepository.findByEmail(username)
       .orElseThrow(() -> new EntityNotFoundException("User with the email " + username + "cannot be found"));
 
-
-    if (Objects.nonNull(userRequestDTO.email())) {
-      userEntity.setEmail(userRequestDTO.email());
-    }
-
-    if (Objects.nonNull(userRequestDTO.role())) {
-      userEntity.setRole(userRequestDTO.role());
-    }
-
-    if (Objects.nonNull(userRequestDTO.name())) {
-      userEntity.setName(userRequestDTO.name());
-    }
-
-    if (Objects.nonNull(userRequestDTO.password())) {
-      userEntity.setPassword(passwordEncoder.encode(userRequestDTO.password()));
-    }
-
-    if (Objects.nonNull(userRequestDTO.loggedHours())) {
-      userEntity.setLoggedHour(userRequestDTO.loggedHours());
-    }
-
-    if (Objects.nonNull(userRequestDTO.tasks())) {
-      userEntity.setTasks(userRequestDTO.tasks());
-    }
-
-
-    UserEntity userEntity1 = saveUser(userEntity);
+    UserEntity userEntity1 = this.edit(userRequestDTO, userEntity.getUserId());
 
     return UserResponseDTO
       .builder()
@@ -131,12 +105,50 @@ public class UserService {
     return true;
   }
 
+  @Transactional
   public TaskResponseDTO bestPerformedTask(Long userId) {
-
     UserEntity userEntities = userRepository.task(userId);
-
     return null;
   }
 
+  @Transactional
+  public void removeUser(Long userId) {
+    this.userRepository.deleteById(userId);
+  }
 
+  @Transactional
+  public void editUser(UserRequestDTO userRequestDTO, Long userId) {
+    this.edit(userRequestDTO, userId);
+  }
+
+
+  private UserEntity edit(UserRequestDTO userRequestDTO, Long userId) {
+
+    UserEntity userEntity = this.userRepository.findById(userId).orElseThrow();
+
+    if (Objects.nonNull(userRequestDTO.email())) {
+      userEntity.setEmail(userRequestDTO.email());
+    }
+    if (Objects.nonNull(userRequestDTO.role())) {
+      userEntity.setRole(userRequestDTO.role());
+    }
+    if (Objects.nonNull(userRequestDTO.name())) {
+      userEntity.setName(userRequestDTO.name());
+    }
+    if (Objects.nonNull(userRequestDTO.password())) {
+      userEntity.setPassword(this.passwordEncoder.encode(userRequestDTO.password()));
+    }
+    if (Objects.nonNull(userRequestDTO.tasks())) {
+      userEntity.setTasks(userRequestDTO.tasks());
+    }
+    if (Objects.nonNull(userRequestDTO.loggedHours())) {
+      userEntity.setLoggedHour(userRequestDTO.loggedHours());
+    }
+    if (Objects.nonNull(userRequestDTO.taskCategoryEntities())) {
+      userEntity.setTaskCategoryEntities(userRequestDTO.taskCategoryEntities());
+    }
+
+    return this.userRepository.save(userEntity);
+
+  }
 }
