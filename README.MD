@@ -11,7 +11,7 @@ This project is a Spring Boot application that uses a PostgreSQL database.
 ---
 
 ## Create the following property in app.properties file
-jwt.secret=<JWT SECRETE PHRASE>
+jwt.secret=<JWT SECRETE PHRASE><br/>
 jwt.expiration=<JWT EXPIRATION NUMBER>
 
 ## Running app
@@ -23,11 +23,6 @@ jwt.expiration=<JWT EXPIRATION NUMBER>
 3. **Run  the app **
    java -jar target/your-app-name-0.0.1-SNAPSHOT.jar
 
-
-
-
 ```
-
-2. **Create a PostgreSQL database:**
 
 
